@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+    object_detection:
+        build: ./server
+        volumes:
+          - ./server:/home
+        ports:
+          - 5001:80
