@@ -5,5 +5,6 @@ services:
         build: ./server
         volumes:
           - ./server:/home
+        #image: yohanderose/5225_ojbdetector
         ports:
-          - 5001:80
+          - 5009:5009

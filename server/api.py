@@ -1,8 +1,8 @@
-# webserver
+# Webserver
 from flask import Flask, request,  json
 from flask_restful import Resource, Api
 
-# object detection
+# Object detection
 import numpy as np
 import sys
 import time
@@ -182,4 +182,4 @@ api.add_resource(Product, '/')
 
 # Run the application
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=5009, threaded=True,)  # debug=True)

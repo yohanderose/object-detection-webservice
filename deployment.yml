@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ojbdetect-service
+spec:
+  selector:
+    app: objdetect
+  ports:
+  - protocol: "TCP"
+    port: 6000
+    targetPort: 5009
+    nodePort: 30000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: objdetect-deployment
+  labels:
+    app: objdetect
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: objdetect
+  template:
+    metadata:
+      labels:
+        app: objdetect
+    spec:
+      containers:
+      - name: objdetect
+        image: yohanderose/5225_ojbdetector
+        resources:
+          limits:
+            cpu: "0.5"
+          requests:
+            cpu: "0.5"
+        ports:
+        - containerPort: 5009
+      #nodeSelector:
+        #hostname: kind-worker
