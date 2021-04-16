@@ -13,10 +13,13 @@ import os
 import pandas as pd
 from tqdm import tqdm
 
+DISPLAY_RESPONSES = True
+
 
 def call_object_detection_service(image):
-    try:
+    global DISPLAY_RESPONSES
 
+    try:
         url = str(sys.argv[2])
         data = {}
         # generate uuid for image
@@ -31,9 +34,12 @@ def call_object_detection_service(image):
         response = requests.post(url, json=json.dumps(data), headers=headers)
 
         if response.ok:
-            output = "Thread : {},  input image: {},  output:{}".format(threading.current_thread().getName(),
-                                                                        image,  response.text)
-            print(output)
+            if DISPLAY_RESPONSES:
+                output = "Thread : {},  input image: {}".format(
+                    threading.current_thread().getName(), image)
+                print(output)
+                formatted_results = json.loads(response.text)
+                print(json.dumps(formatted_results, indent=4))
         else:
             print("Error, response status:{}".format(response))
 
@@ -51,6 +57,8 @@ def get_images_to_be_processed(input_folder):
 
 
 def run_experiments():
+    global DISPLAY_RESPONSES
+    DISPLAY_RESPONSES = False
     input_folder = os.path.join(sys.argv[1], "")
     images = get_images_to_be_processed(input_folder)
     num_images = images.__len__()
