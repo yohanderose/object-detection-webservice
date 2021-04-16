@@ -107,8 +107,6 @@ def do_prediction(image, net, LABELS):
     idxs = cv2.dnn.NMSBoxes(boxes, confidences, confthres,
                             nmsthres)
 
-    # TODO Prepare the output as required to the assignment specification
-    # ensure at least one detection exists
     objects = []
     if len(idxs) > 0:
         # loop over the indexes we are keeping
@@ -160,9 +158,6 @@ Weights = get_weights(wpath)
 app = Flask(__name__)
 api = Api(app)
 
-
-# TODO: - Make each request multi-threaded
-#       - Setup Kubernetes
 
 class Product(Resource):
     def post(self):

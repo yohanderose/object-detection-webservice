@@ -10,7 +10,8 @@ import base64
 import json
 import os
 
-# send http request
+import pandas as pd
+from tqdm import tqdm
 
 
 def call_object_detection_service(image):
@@ -49,11 +50,52 @@ def get_images_to_be_processed(input_folder):
     return images
 
 
+def run_experiments():
+    input_folder = os.path.join(sys.argv[1], "")
+    images = get_images_to_be_processed(input_folder)
+    num_images = images.__len__()
+    num_workers = [1, 6, 11, 16, 21, 26, 31]
+    pods = [1, 2, 3, 4]
+    n_tests = 3
+    print("Experiment mode activated, running tests for pods {} and workers {}, each a total of {} times.".format(
+        pods, num_workers, n_tests))
+    time.sleep(4)
+
+    # dataframe table for recording results
+    cols = ['pod_count', 'client_threads', 'avg_response']
+    df = pd.DataFrame(columns=cols)
+
+    for pod in pods:
+        for num_worker in tqdm(num_workers):
+
+            aggregate_average_response = 0
+            for i in range(n_tests):
+                start_time = time.time()
+                with PoolExecutor(max_workers=num_worker) as executor:
+                    for _ in executor.map(call_object_detection_service,  images):
+                        pass
+                elapsed_time = time.time() - start_time
+                aggregate_average_response += elapsed_time/num_images
+
+            row = pd.DataFrame(
+                [[pod, num_worker, aggregate_average_response/n_tests]], columns=cols)
+            df = df.append(row)
+
+        _ = input(
+            "Please increment total pod replicas to {}. Sleeping, press enter to wake.".format(pod+1))
+
+    df.to_csv('experiments.csv', index=False)
+
+
 def main():
     # provide arguments-> input folder, url, number of workers
     if len(sys.argv) != 4:
         raise ValueError("Arguments list is wrong. Please use the following format: {} {} {} {}".
                          format("python iWebLens_client.py", "<input_folder>", "<URL>", "<number_of_workers>"))
+
+    if int(sys.argv[3]) == 0:
+        run_experiments()
+        return
 
     input_folder = os.path.join(sys.argv[1], "")
     images = get_images_to_be_processed(input_folder)
