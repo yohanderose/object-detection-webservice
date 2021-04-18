@@ -2,15 +2,13 @@
 
 Object Detection web service within a containerised environment using Docker and Kubernetes. You can run this locally and on a remote server using Kind - a single machine abstraction for Kubernetes.
 
-## ![](./arch-overview.png)
+![](./arch-overview.png)
 
 ## Dependencies 🐳
 
 - Ubuntu 18.04
 - Docker
 - Python > 3.5
-
----
 
 ## Usage ️️️️️️️️️⚙️
 
