@@ -1,8 +1,8 @@
-# Webserver
+# Webserver things
 from flask import Flask, request,  json
 from flask_restful import Resource, Api
 
-# Object detection
+# Object detection things
 import numpy as np
 import sys
 import time
@@ -16,6 +16,11 @@ nmsthres = 0.1
 
 
 def get_labels(labels_path):
+    """Extract object classes from file.
+
+    :param labels_path: Path to class label files
+    """
+
     # load the COCO class labels our YOLO model was trained on
     lpath = os.path.sep.join([yolo_path, labels_path])
 
@@ -25,24 +30,41 @@ def get_labels(labels_path):
 
 
 def get_weights(weights_path):
-    # derive the paths to the YOLO weights and model configuration
+    """Derive the path to the YOLO model weights.
+
+    :param weights_path: Path to weights file
+    """
     weightsPath = os.path.sep.join([yolo_path, weights_path])
     return weightsPath
 
 
 def get_config(config_path):
+    """Derive the path to the YOLO model configuration.
+
+    :param config_path:
+    """
     configPath = os.path.sep.join([yolo_path, config_path])
     return configPath
 
 
 def load_model(configpath, weightspath):
-    # load our YOLO object detector trained on COCO dataset (80 classes)
+    """Load our YOLO object detector trained on COCO dataset (80 classes)
+
+    :param configpath: Path to model config
+    :param weightspath: Path to model weights
+    """
     print("[INFO] loading YOLO from disk...")
     net = cv2.dnn.readNetFromDarknet(configpath, weightspath)
     return net
 
 
 def do_prediction(image, net, LABELS):
+    """Perform object detection.
+
+    :param image: Image to process in base64
+    :param net: Object Detection model
+    :param LABELS: Possible class labels
+    """
 
     (H, W) = image.shape[:2]
     # determine only the *output* layer names that we need from YOLO
@@ -111,6 +133,7 @@ def do_prediction(image, net, LABELS):
     if len(idxs) > 0:
         # loop over the indexes we are keeping
         for i in idxs.flatten():
+            # Create an object describing the object -> label, confidence and bounding box
             objects.append({
                 "label": LABELS[classIDs[i]],
                 "accuracy": confidences[i],
@@ -126,15 +149,22 @@ def do_prediction(image, net, LABELS):
 
 
 def process_image(image_base64):
+    """Image to perform object detection.
+
+    :param image_base64: Image in base64
+    """
     objects = []
     try:
+        # Convert base64 image into numpy array, opencv readable
         nparr = np.fromstring(base64.b64decode(image_base64), np.uint8)
+        # Convert from numpy image to cv2 image formats
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
+        # Convert colour scheme to RGB
         image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        # load the neural net.  Should be local to this method as its multi-threaded endpoint
+        # Load the neural net.  Should be local to this method as its multi-threaded endpoint
         nets = load_model(CFG, Weights)
+        # Fetch objects in image
         objects = do_prediction(image, nets, Labels)
 
     except Exception as e:
@@ -145,11 +175,12 @@ def process_image(image_base64):
 
 yolo_path = '.'
 
-# Yolov3-tiny versrion
+# Yolov3-tiny version
 labelsPath = "coco.names"
 cfgpath = "yolov3-tiny.cfg"
 wpath = "yolov3-tiny.weights"
 
+# Instantiate object detection params
 Labels = get_labels(labelsPath)
 CFG = get_config(cfgpath)
 Weights = get_weights(wpath)
@@ -159,9 +190,15 @@ app = Flask(__name__)
 api = Api(app)
 
 
-class Product(Resource):
+class ObjectDetector(Resource):
+    """API object that describes request handling behaviour."""
+
     def post(self):
+        """Receive an http post request with image and uuid data."""
+
+        # Unpack image and uuid data from the request
         data = json.loads(request.json)
+        # Prepare and return a response
         response = {
             "id": data["id"],
             "objects": [
@@ -173,8 +210,8 @@ class Product(Resource):
 
 
 # Create routes
-api.add_resource(Product, '/')
+api.add_resource(ObjectDetector, '/')
 
-# Run the application
+# Run the application, enabling multi-threading and disabling debug output
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5009, threaded=True,)  # debug=True)
