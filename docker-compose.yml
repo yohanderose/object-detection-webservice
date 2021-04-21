@@ -3,12 +3,12 @@ version: '3'
 
 services:
     object_detection:
-        # Path to Dockerfile
-        #build: ./server
-        ## Host folder that is dynamically mirrored in the client
-        #volumes:
-          #- ./server:/home
-        image: yohanderose/5225_ojbdetector
+         #Path to Dockerfile
+        build: ./server
+        # Host folder that is dynamically mirrored in the client
+        volumes:
+          - ./server:/home
+        #image: yohanderose/5225_ojbdetector
         ports:
             # Host port is mapped to the clients api service
           - 5009:5009

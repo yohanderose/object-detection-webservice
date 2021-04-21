@@ -201,10 +201,8 @@ class ObjectDetector(Resource):
         # Prepare and return a response
         response = {
             "id": data["id"],
-            "objects": [
-                process_image(data["image"])
-                # str(type(data["image"]))
-            ]
+            "objects": process_image(data["image"])
+            # str(type(data["image"]))
         }
         return response
 
