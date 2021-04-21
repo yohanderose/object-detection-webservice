@@ -5,7 +5,7 @@ Object Detection web service within a containerised environment using Docker and
 - [Github Repo](https://github.com/yohanderose/object-detection-webservice.git)
 - [Docker Base Image](https://hub.docker.com/r/yohanderose/5225_ojbdetector)
 - [YouTube Video](https://www.youtube.com/watch?v=5oJUDmqMXdc&t=2s)
-- Nectar Instance (3 Pods) @ 115.146.87.251:80
+- Nectar Instance (3 Pods) @ 115.146.86.35:80
 
 ![](./arch-overview.png)
 
