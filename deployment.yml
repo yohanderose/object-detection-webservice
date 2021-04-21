@@ -36,7 +36,7 @@ spec:
         app: objdetect
     spec:
       containers:
-      - name: objdetect
+      - name: objdetect-container
         # Pull already build base image
         image: yohanderose/5225_ojbdetector
         # Request .5 cpu and limit to .5 as well

@@ -9,9 +9,6 @@ sudo apt-get install -y kubectl
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
 chmod +x ./kind
 sudo mv kind /usr/bin
-# Fetch repo
-git clone https://github.com/yohanderose/object-detection-webservice.git
-cd object-detection-webservice/
 # Start docker deamon
 sudo systemctl start docker
 # Create Cluster and spin up Pods

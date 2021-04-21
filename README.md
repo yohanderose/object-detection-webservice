@@ -2,6 +2,11 @@
 
 Object Detection web service within a containerised environment using Docker and Kubernetes. You can run this locally and on a remote server using Kind - a single machine abstraction for Kubernetes.
 
+- [Github Repo](https://github.com/yohanderose/object-detection-webservice.git)
+- [Docker Base Image](https://hub.docker.com/r/yohanderose/5225_ojbdetector)
+- [YouTube Video](https://www.youtube.com/watch?v=5oJUDmqMXdc&t=2s)
+- Nectar Instance (3 Pods) @ 115.146.87.251:80
+
 ![](./arch-overview.png)
 
 ## Dependencies 🐳
@@ -37,3 +42,5 @@ python client/iWebLens_client.py <path to dir of images>/ http://<server ip> <nu
 # example: python iWebLens_client.py test/ http://localhost 16
 # yohan's server: python iWebLens_client.py test/ http://118.138.237.116 16
 ```
+
+![example output](./example-output.png)

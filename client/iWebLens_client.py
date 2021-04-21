@@ -13,9 +13,6 @@ import json
 import os
 import random
 
-# For experiments and recording results
-import pandas as pd
-from tqdm import tqdm
 
 # Show all out put unless experimenting
 TESTING = False
@@ -90,6 +87,9 @@ def run_experiments():
     Run a specific set of worker-pod combinations several times to test 
     web service performance and save out the results as a CSV.
     """
+    import pandas as pd
+    from tqdm import tqdm
+
     global TESTING
     # Disable output for each call but allow error output
     TESTING = True
